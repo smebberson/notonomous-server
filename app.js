@@ -3,6 +3,7 @@ var sys = require('sys');
 var nowjs = require('now');
 var express = require('express');
 var mongo = require('mongodb');
+var _ = require('underscore');
 
 // define constants
 var PORT = 8889;
@@ -58,16 +59,22 @@ everyone.now.setUser = function (user) {
 
 everyone.now.saveNote = function (note) {
 	
-	console.log('saveNote');
-	console.log(note);
-	
 	var now = new Date();
 	var self = this;
+	var toUpdate = {};
 	
 	// update to the fact that we've synced it
 	note.bSynced = true;
 	note.syncDelta = now.toJSON();
 	note.user = note.user || this.now.user;
+	note._id = (note['_id']) ? new db.bson_serializer.ObjectID(note['_id']) : new db.bson_serializer.ObjectID() ;
+	
+	// build the model that we want to return
+	toUpdate.bSynced = note.bSynced;
+	toUpdate.syncDelta = note.syncDelta;
+	toUpdate.user = note.user;
+	toUpdate.id = note.id;
+	toUpdate._id = note._id.toString();
 	
 	// let's save the note to database
 	// save the document
@@ -75,18 +82,20 @@ everyone.now.saveNote = function (note) {
 		
 		if (err) sys.puts(err);
 		
-		// JavaScript in the browser converts it to a string, we need to turn it back into an ObjectID type
-		if (note['_id']) note['_id'] = new db.bson_serializer.ObjectID(note['_id']);
-		
 		// at present, it's working for insert, but not update
 		// update returns a completely different set of arguments, so I need to cover that off
-		collection.save(note, {safe: true}, function (pErr, pDoc) {
+		collection.save(note, {safe: true}, function (pErr) {
+			
+			// first argument is always the error
+			// second argument is
+			// 						if we inserted the note: the note itself
+			// 						if we updated the note: 1 or 0
 			
 			if (pErr) sys.puts(pErr);
 			
 			if (!pErr) {
 				// tell everyone in the group (including the client)
-				groups[self.now.user].now.noteSaved(pDoc);
+				groups[self.now.user].now.noteSaved(err, toUpdate);
 			}
 			
 		});
