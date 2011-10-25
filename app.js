@@ -30,7 +30,7 @@ process.on('SIGHUP', function () {
 
 // init nowjs
 var everyone = nowjs.initialize(app);
-require('./lib/now.js')(everyone, groups);
+require('./lib/now.js')(everyone, groups, db);
 
 // advise the server is running
 sys.puts('Notonomous-server is listening on http://localhost:' + PORT);
