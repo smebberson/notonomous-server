@@ -2,7 +2,6 @@
 var sys = require('sys');
 var nowjs = require('now');
 var express = require('express');
-var _ = require('underscore');
 
 // define constants
 var PORT = 8889;
