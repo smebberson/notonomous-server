@@ -1,0 +1,19 @@
+{
+	
+  "appenders": [
+    { 
+      "category": "ns", 
+      "type": "file", 
+      "filename": "./logs/notonomous-server.log", 
+      "layout": { 
+        "type": "pattern",
+		"pattern": "[%d] [%p] %m"
+      } 
+    }
+  ],
+  
+  "levels": {
+    "ns":  "INFO"
+  }
+
+}

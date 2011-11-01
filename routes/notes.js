@@ -1,5 +1,5 @@
 
-module.exports = function (app, db) {
+module.exports = function (app, log, db) {
 	
 	app.param('id', function (req, res, next, id) {
 		
