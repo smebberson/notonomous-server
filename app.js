@@ -9,7 +9,7 @@ log4js.configure('./log4js.json');
 var log = log4js.getLogger('ns');
 
 // define constants
-var PORT = 8889;
+var PORT = 8702;
 
 // define variables
 var groups = [];
